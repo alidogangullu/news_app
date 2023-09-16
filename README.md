@@ -6,8 +6,7 @@ The Flutter News App is a mobile application designed to provide users with a se
 
 ## Screenshots
 
-<img src="https://github.com/alidogangullu/news_app/raw/main/app%20images/app.jpeg" alt="App Screenshot" width="250"/>___<img src="https://github.com/alidogangullu/news_app/raw/main/app%20images/swipe.jpeg" alt="Swipe Action Screenshot" width="250"/>
-
+<img src="https://github.com/alidogangullu/news_app/raw/main/app%20images/swipe.jpeg" alt="Swipe Action Screenshot" width="250"/>___<img src="https://github.com/alidogangullu/news_app/raw/main/app%20images/app.jpeg" alt="App Screenshot" width="250"/>
 
 ## Features (work in progress)
 
