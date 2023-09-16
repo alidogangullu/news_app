@@ -86,16 +86,24 @@ class HomePageState extends State<HomePage> {
           Expanded(
             child: Center(child: NewsCards()),
           ),
-          BottomBarFloating(
-            items: items,
-            backgroundColor: const Color(0xFF252525),
-            color: Colors.grey,
-            colorSelected: Colors.white,
-            indexSelected: visit,
-            paddingVertical: 24,
-            onTap: (int index) => setState(() {
-              visit = index;
-            }),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 24.0),
+            child: SizedBox(
+              height: 70,
+              width: 250,
+              child: BottomBarFloating(
+                items: items,
+                backgroundColor: const Color(0xFF252525),
+                color: Colors.grey,
+                colorSelected: Colors.white,
+                indexSelected: visit,
+                paddingVertical: 24,
+                borderRadius: BorderRadius.circular(35),
+                onTap: (int index) => setState(() {
+                  visit = index;
+                }),
+              ),
+            ),
           ),
         ],
       ),

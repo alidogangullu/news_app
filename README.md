@@ -1,16 +1,19 @@
-# news_app
+# Flutter News App
 
-A new Flutter project.
+## Overview
 
-## Getting Started
+The Flutter News App is a mobile application designed to provide users with a seamless and interactive experience for consuming news content. The app leverages various data sources including RSS feeds, web scraping, and Twitter accounts to aggregate and display news articles.
 
-This project is a starting point for a Flutter application.
+![App Screenshot](app_images/app.jpeg)
+![Swipe Action Screenshot](app_images/swipe.jpeg)
 
-A few resources to get you started if this is your first Flutter project:
+## Features (work in progress)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- Swipeable UI for effortless navigation through news articles.
+- Integration with multiple data sources, including RSS, web scraping, and Twitter accounts.
+- Real-time updates to keep users informed of the latest news.
+- Bookmarking feature to easily access favorite articles.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Prerequisites
+
+- [Flutter SDK](https://flutter.dev/docs/get-started/install)
