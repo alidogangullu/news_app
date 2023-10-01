@@ -1,6 +1,7 @@
-import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:news_app/navbar.dart';
+import 'package:news_app/newsListCreator.dart';
 import 'package:news_app/newsCards.dart';
 import 'package:news_app/sources.dart';
 
@@ -27,8 +28,6 @@ class MyApp extends StatelessWidget {
         textStyle: const TextStyle(
           color: Colors.white,
           fontSize: 30,
-          //fontWeight: FontWeight.bold
-          // other options
         ),
       ),
       // other options
@@ -40,35 +39,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: darkThemeData,
-      home: const HomePage(title: 'News App'),
+      home: HomePage(title: 'News App'),
     );
   }
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  @override
-  HomePageState createState() => HomePageState();
+class HomePage extends StatelessWidget {
+  HomePage({super.key, required this.title});
 
   final String title;
-}
 
-class HomePageState extends State<HomePage> {
-
-  int visit = 0;
-  List<TabItem> items = [
-    const TabItem(
-      icon: Icons.home,
-      // title: 'Home',
-    ),
-    const TabItem(
-      icon: Icons.search,
-      // title: 'Search',
-    ),
-    const TabItem(
-      icon: Icons.bookmark,
-      // title: 'Bookmark',
+  final List<NewsData> myNewsDataList = [
+    NewsData(
+      title: "Sample Title",
+      date: "2023-10-01",
+      description: "Sample Description",
     ),
   ];
 
@@ -76,37 +61,21 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(title),
       ),
-      //extendBody: true,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           const Sources(),
           Expanded(
-            child: Center(child: NewsCards()),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 24.0),
-            child: SizedBox(
-              height: 70,
-              width: 250,
-              child: BottomBarFloating(
-                items: items,
-                backgroundColor: const Color(0xFF252525),
-                color: Colors.grey,
-                colorSelected: Colors.white,
-                indexSelected: visit,
-                paddingVertical: 24,
-                borderRadius: BorderRadius.circular(35),
-                onTap: (int index) => setState(() {
-                  visit = index;
-                }),
-              ),
-            ),
+            child: Center(
+                child: NewsCards(
+              newsDataList: myNewsDataList,
+            )),
           ),
         ],
       ),
+      bottomNavigationBar: MyBottomNavigationBar(),
     );
   }
 }

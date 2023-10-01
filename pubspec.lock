@@ -17,14 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
-  awesome_bottom_bar:
-    dependency: "direct main"
-    description:
-      name: awesome_bottom_bar
-      sha256: dd42e6767ae22cf5eb47695991e7a3f964ccba3b403a93837c20eb4f74e4ad0f
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.4"
   boolean_selector:
     dependency: transitive
     description:
@@ -65,14 +57,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      sha256: e35129dc44c9118cee2a5603506d823bab99c68393879edb440e0090d07586be
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   dart_rss:
     dependency: "direct main"
     description:
@@ -115,14 +99,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  freezed_annotation:
-    dependency: transitive
-    description:
-      name: freezed_annotation
-      sha256: c3fd9336eb55a38cc1bbd79ab17573113a8deccd0ecbbf926cca3c62803b5c2d
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.1"
   google_fonts:
     dependency: "direct main"
     description:
@@ -155,14 +131,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.1"
-  json_annotation:
-    dependency: transitive
-    description:
-      name: json_annotation
-      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -195,22 +163,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
-  mime:
-    dependency: transitive
-    description:
-      name: mime
-      sha256: e4ff8e8564c03f255408decd16e7899da1733852a9110a58fe6d1b817684a63e
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.4"
-  oauth1:
-    dependency: transitive
-    description:
-      name: oauth1
-      sha256: bc23d3d5d36ba1cb39ba0f9ad18d29ab08a7c4e06f1d0fa7b2fb9b0225622873
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   path:
     dependency: transitive
     description:
@@ -344,14 +296,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
-  twitter_api_v2:
-    dependency: "direct main"
-    description:
-      name: twitter_api_v2
-      sha256: "6a3c17a5772dc98097aa393bfdbb45c5985d159f6383116f49447c83adc3252e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.9.4"
   typed_data:
     dependency: transitive
     description:
@@ -360,14 +304,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
-  universal_io:
-    dependency: transitive
-    description:
-      name: universal_io
-      sha256: "1722b2dcc462b4b2f3ee7d188dad008b6eb4c40bbd03a3de451d82c78bba9aad"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.2"
   vector_math:
     dependency: transitive
     description:
