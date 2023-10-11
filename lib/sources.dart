@@ -54,3 +54,141 @@ class _SourcesState extends State<Sources> {
     );
   }
 }
+
+class EditSources extends StatelessWidget {
+  const EditSources({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final List<String> newsSources = [
+      'X Website',
+      'Y Website',
+      'Z Website',
+      'T Website',
+      'P Website',
+    ];
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFFFE8E5),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFFFE8E5),
+        title: const Text(
+          'Select Sources',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 24,
+          ),
+        ),
+      ),
+      body: CategoryList(
+        categories: newsSources,
+      ),
+      extendBody: true,
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
+        child: Container(
+            height: 60,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(35), color: Colors.black),
+            child: const Center(
+              child: Text(
+                'Submit',
+                style: TextStyle(color: Colors.white, fontSize: 21),
+              ),
+            )),
+      ),
+    );
+  }
+}
+
+class CategoryList extends StatefulWidget {
+  const CategoryList({super.key, required this.categories});
+
+  final List<String> categories;
+
+  @override
+  CategoryListState createState() => CategoryListState();
+}
+
+class CategoryListState extends State<CategoryList> {
+  List<bool> selectedCategories = List.empty();
+
+  void toggleCategory(int index) {
+    setState(() {
+      selectedCategories[index] = !selectedCategories[index];
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedCategories = List.filled(widget.categories.length, false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: widget.categories.length,
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.white),
+            borderRadius: BorderRadius.circular(35),
+            color: Colors.white,
+          ),
+          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+            title: Text(
+              widget.categories[index],
+              style: const TextStyle(fontSize: 17),
+            ),
+            leading: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: SizedBox(
+                width: 50,
+                height: 50,
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: selectedCategories[index]
+                      ? Stack(
+                          children: [
+                            Container(
+                              width: 50,
+                              height: 50,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const Center(
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.white,
+                                size: 28,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                          ),
+                        ),
+                  onPressed: () {
+                    toggleCategory(index);
+                  },
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

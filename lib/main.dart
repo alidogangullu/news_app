@@ -39,43 +39,73 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: darkThemeData,
-      home: HomePage(title: 'News App'),
+      home: const HomePage(title: 'News App'),
     );
   }
 }
 
 class HomePage extends StatelessWidget {
-  HomePage({super.key, required this.title});
+  const HomePage({super.key, required this.title});
 
   final String title;
-
-  final List<NewsData> myNewsDataList = [
-    NewsData(
-      title: "Sample Title",
-      date: "2023-10-01",
-      description: "Sample Description",
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 15),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.grey[700]!,
+                  width: 0.5,
+                ),
+              ),
+              child: IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EditSources(),
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.widgets_outlined,
+                    color: Colors.grey[200],
+                    size: 28,
+                  )),
+            ),
+          )
+        ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           const Sources(),
           Expanded(
-            child: Center(
-                child: NewsCards(
-              newsDataList: myNewsDataList,
-            )),
+            child: FutureBuilder(
+              future: fetchRssData('https://www.jpl.nasa.gov/feeds/news/'),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Center(
+                    child: NewsCards(newsDataList: snapshot.data!),
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
           ),
         ],
       ),
-      bottomNavigationBar: MyBottomNavigationBar(),
+      bottomNavigationBar: const MyBottomNavigationBar(),
     );
   }
 }

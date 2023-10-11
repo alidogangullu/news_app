@@ -37,6 +37,7 @@ dependencies:
   google_fonts: any
   appinio_swiper: ^2.0.3
   dart_rss: ^3.0.1
+  http: ^0.13.6
 
 dev_dependencies:
   flutter_test:
