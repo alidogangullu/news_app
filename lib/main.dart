@@ -70,7 +70,7 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const EditSources(),
+                        builder: (context) => const EditSourcesPage(),
                       ),
                     );
                   },
@@ -86,7 +86,7 @@ class HomePage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const Sources(),
+          const SourcesTab(),
           Expanded(
             child: FutureBuilder(
               future: fetchRssData('https://www.jpl.nasa.gov/feeds/news/'),

@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/riverpod.dart';
 
-class Sources extends StatefulWidget {
-  const Sources({super.key});
+final sourcesMapProvider = StateProvider<Map<String, bool>>((ref) {
+  return {
+    'source1': true,
+    'source2': true,
+    'source3': true,
+  };
+});
+
+class SourcesTab extends StatefulWidget {
+  const SourcesTab({super.key});
 
   @override
-  State<Sources> createState() => _SourcesState();
+  State<SourcesTab> createState() => _SourcesTabState();
 }
 
-class _SourcesState extends State<Sources> {
+class _SourcesTabState extends State<SourcesTab> {
   int selectedSourcesIndex = 0;
 
   final List<String> newsSources = [
@@ -55,18 +65,14 @@ class _SourcesState extends State<Sources> {
   }
 }
 
-class EditSources extends StatelessWidget {
-  const EditSources({super.key});
+class EditSourcesPage extends ConsumerWidget {
+  const EditSourcesPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final List<String> newsSources = [
-      'X Website',
-      'Y Website',
-      'Z Website',
-      'T Website',
-      'P Website',
-    ];
+    Widget build(BuildContext context, WidgetRef ref) {
+    
+    final sourcesMap = ref.read(sourcesMapProvider);
+    final List<String> newsSources = sourcesMap.keys.toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFE8E5),
@@ -80,8 +86,8 @@ class EditSources extends StatelessWidget {
           ),
         ),
       ),
-      body: CategoryList(
-        categories: newsSources,
+      body: EditableSourcesList(
+        sources: newsSources,
       ),
       extendBody: true,
       bottomNavigationBar: Padding(
@@ -101,16 +107,16 @@ class EditSources extends StatelessWidget {
   }
 }
 
-class CategoryList extends StatefulWidget {
-  const CategoryList({super.key, required this.categories});
+class EditableSourcesList extends StatefulWidget {
+  const EditableSourcesList({super.key, required this.sources});
 
-  final List<String> categories;
+  final List<String> sources;
 
   @override
-  CategoryListState createState() => CategoryListState();
+  EditableSourcesListState createState() => EditableSourcesListState();
 }
 
-class CategoryListState extends State<CategoryList> {
+class EditableSourcesListState extends State<EditableSourcesList> {
   List<bool> selectedCategories = List.empty();
 
   void toggleCategory(int index) {
@@ -123,13 +129,13 @@ class CategoryListState extends State<CategoryList> {
   void initState() {
     super.initState();
 
-    selectedCategories = List.filled(widget.categories.length, false);
+    selectedCategories = List.filled(widget.sources.length, false);
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: widget.categories.length,
+      itemCount: widget.sources.length,
       itemBuilder: (context, index) {
         return Container(
           decoration: BoxDecoration(
@@ -141,7 +147,7 @@ class CategoryListState extends State<CategoryList> {
           child: ListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: 20),
             title: Text(
-              widget.categories[index],
+              widget.sources[index],
               style: const TextStyle(fontSize: 17),
             ),
             leading: CircleAvatar(
@@ -192,3 +198,4 @@ class CategoryListState extends State<CategoryList> {
     );
   }
 }
+
