@@ -1,41 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod/riverpod.dart';
 
 final sourcesMapProvider = StateProvider<Map<String, bool>>((ref) {
   return {
+    //source name - isActivated
     'source1': true,
     'source2': true,
     'source3': true,
   };
 });
 
-class SourcesTab extends StatefulWidget {
+class SourcesTab extends ConsumerStatefulWidget {
   const SourcesTab({super.key});
 
   @override
-  State<SourcesTab> createState() => _SourcesTabState();
+  ConsumerState<SourcesTab> createState() => _SourcesTabState();
 }
 
-class _SourcesTabState extends State<SourcesTab> {
+class _SourcesTabState extends ConsumerState<SourcesTab> {
   int selectedSourcesIndex = 0;
-
-  final List<String> newsSources = [
-    'X Website',
-    'Y Website',
-    'Z Website',
-    'T Website',
-    'P Website',
-  ];
 
   @override
   Widget build(BuildContext context) {
+
+    final sourcesMap = ref.watch(sourcesMapProvider);
+    final List<String> activeSources =
+    sourcesMap.keys.toList().where((source) => sourcesMap[source] == true).toList();
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
         padding: const EdgeInsets.only(left: 8),
         child: Row(
-          children: newsSources.asMap().entries.map((entry) {
+          children: activeSources.asMap().entries.map((entry) {
             final index = entry.key;
             final category = entry.value;
 
@@ -70,9 +67,6 @@ class EditSourcesPage extends ConsumerWidget {
 
   @override
     Widget build(BuildContext context, WidgetRef ref) {
-    
-    final sourcesMap = ref.read(sourcesMapProvider);
-    final List<String> newsSources = sourcesMap.keys.toList();
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFE8E5),
@@ -86,9 +80,7 @@ class EditSourcesPage extends ConsumerWidget {
           ),
         ),
       ),
-      body: EditableSourcesList(
-        sources: newsSources,
-      ),
+      body: const EditableSourcesList(),
       extendBody: true,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
@@ -107,92 +99,110 @@ class EditSourcesPage extends ConsumerWidget {
   }
 }
 
-class EditableSourcesList extends StatefulWidget {
-  const EditableSourcesList({super.key, required this.sources});
-
-  final List<String> sources;
+class EditableSourcesList extends ConsumerStatefulWidget {
+  const EditableSourcesList({super.key});
 
   @override
   EditableSourcesListState createState() => EditableSourcesListState();
 }
 
-class EditableSourcesListState extends State<EditableSourcesList> {
-  List<bool> selectedCategories = List.empty();
-
-  void toggleCategory(int index) {
-    setState(() {
-      selectedCategories[index] = !selectedCategories[index];
-    });
-  }
+class EditableSourcesListState extends ConsumerState<EditableSourcesList> {
+  int itemCount = 0;
 
   @override
   void initState() {
     super.initState();
+    final sourcesMap = ref.read(sourcesMapProvider);
+    itemCount = sourcesMap.length;
+  }
 
-    selectedCategories = List.filled(widget.sources.length, false);
+  void toggleCategory(int index, WidgetRef ref) {
+    final sourcesMap = ref.read(sourcesMapProvider);
+    final List<String> newsSources = sourcesMap.keys.toList();
+
+    final String category = newsSources[index];
+    final bool isSelected = sourcesMap[category] ?? false;
+
+    final updatedMap = {
+      ...sourcesMap,
+      category: !isSelected,
+    };
+
+    ref.read(sourcesMapProvider.state).state = updatedMap;
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: widget.sources.length,
-      itemBuilder: (context, index) {
-        return Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.white),
-            borderRadius: BorderRadius.circular(35),
-            color: Colors.white,
-          ),
-          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(horizontal: 20),
-            title: Text(
-              widget.sources[index],
-              style: const TextStyle(fontSize: 17),
-            ),
-            leading: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: SizedBox(
-                width: 50,
-                height: 50,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: selectedCategories[index]
-                      ? Stack(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const Center(
-                              child: Icon(
-                                Icons.check,
-                                color: Colors.white,
-                                size: 28,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 1,
+    return Consumer(
+      builder: (context, ref, child) {
+        final sourcesMap = ref.watch(sourcesMapProvider);
+        final List<String> newsSources = sourcesMap.keys.toList();
+        final int itemCount = newsSources.length;
+
+        return ListView.builder(
+          itemCount: itemCount,
+          itemBuilder: (context, index) {
+            final String category = newsSources[index];
+            final bool isSelected = sourcesMap[category] ?? false;
+
+            return Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(35),
+                color: Colors.white,
+              ),
+              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20),
+                title: Text(
+                  category,
+                  style: const TextStyle(fontSize: 17),
+                ),
+                leading: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: isSelected
+                          ? Stack(
+                        children: [
+                          Container(
+                            width: 50,
+                            height: 50,
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black,
                             ),
                           ),
+                          const Center(
+                            child: Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
+                        ],
+                      )
+                          : Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
                         ),
-                  onPressed: () {
-                    toggleCategory(index);
-                  },
+                      ),
+                      onPressed: () {
+                        toggleCategory(index, ref);
+                      },
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
