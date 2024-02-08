@@ -45,13 +45,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<Source> sources = ref.read(sourcesProvider);
+    final activatedSources = sources.where((source) => source.isActivated);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -89,8 +92,9 @@ class HomePage extends StatelessWidget {
         children: <Widget>[
           const SourcesTab(),
           Expanded(
+            //todo change news cards after activate or deactivate sources
             child: FutureBuilder(
-              future: fetchRssData('https://www.jpl.nasa.gov/feeds/news/'),
+              future: fetchRssDataFromSources(activatedSources),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Center(

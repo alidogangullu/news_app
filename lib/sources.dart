@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final sourcesMapProvider = StateProvider<Map<String, bool>>((ref) {
-  return {
-    //source name - isActivated
-    'source1': true,
-    'source2': true,
-    'source3': true,
-  };
+class Source{
+  String name;
+  String rss;
+  bool isActivated;
+
+  Source(this.name, this.rss, this.isActivated);
+}
+
+final sourcesProvider = StateProvider<List<Source>>((ref) {
+  return [
+    Source("source1", "rss", true),
+    Source("source2", "https://www.jpl.nasa.gov/feeds/news/", true),
+    Source("source3", "https://www.jpl.nasa.gov/feeds/news/", true),
+  ];
 });
 
 class SourcesTab extends ConsumerStatefulWidget {
@@ -23,9 +30,8 @@ class _SourcesTabState extends ConsumerState<SourcesTab> {
   @override
   Widget build(BuildContext context) {
 
-    final sourcesMap = ref.watch(sourcesMapProvider);
-    final List<String> activeSources =
-    sourcesMap.keys.toList().where((source) => sourcesMap[source] == true).toList();
+    final sourcesMap = ref.watch(sourcesProvider);
+    final List<Source> activeSources = sourcesMap.where((source) => source.isActivated).toList();
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -34,7 +40,7 @@ class _SourcesTabState extends ConsumerState<SourcesTab> {
         child: Row(
           children: activeSources.asMap().entries.map((entry) {
             final index = entry.key;
-            final category = entry.value;
+            final source = entry.value;
 
             return GestureDetector(
               onTap: () {
@@ -45,7 +51,7 @@ class _SourcesTabState extends ConsumerState<SourcesTab> {
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: Text(
-                  category,
+                  source.name,
                   style: TextStyle(
                     fontSize: index == selectedSourcesIndex ? 22 : 16,
                     color: index == selectedSourcesIndex
@@ -66,7 +72,57 @@ class EditSourcesPage extends ConsumerWidget {
   const EditSourcesPage({super.key});
 
   @override
-    Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    void showAddSourceDialog() {
+      TextEditingController nameController = TextEditingController();
+      TextEditingController rssController = TextEditingController();
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Add Source'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Name',
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: rssController,
+                    decoration: const InputDecoration(
+                      labelText: 'RSS Link',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final sourcesList = ref.read(sourcesProvider);
+                  final newSource = Source(nameController.text, rssController.text, true);
+                  ref.read(sourcesProvider.state).state = [...sourcesList, newSource];
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Add'),
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFFFE8E5),
@@ -79,25 +135,37 @@ class EditSourcesPage extends ConsumerWidget {
             fontSize: 24,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: showAddSourceDialog,
+            icon: const Icon(Icons.add_circle_rounded, size: 35, color: Colors.black,),
+          ),
+        ],
       ),
       body: const EditableSourcesList(),
       extendBody: true,
+      /*
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
         child: Container(
-            height: 60,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(35), color: Colors.black),
-            child: const Center(
-              child: Text(
-                'Submit',
-                style: TextStyle(color: Colors.white, fontSize: 21),
-              ),
-            )),
+          height: 60,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(35),
+            color: Colors.black,
+          ),
+          child: const Center(
+            child: Text(
+              'Submit',
+              style: TextStyle(color: Colors.white, fontSize: 21),
+            ),
+          ),
+        ),
       ),
+    */
     );
   }
 }
+
 
 class EditableSourcesList extends ConsumerStatefulWidget {
   const EditableSourcesList({super.key});
@@ -112,38 +180,34 @@ class EditableSourcesListState extends ConsumerState<EditableSourcesList> {
   @override
   void initState() {
     super.initState();
-    final sourcesMap = ref.read(sourcesMapProvider);
+    final sourcesMap = ref.read(sourcesProvider);
     itemCount = sourcesMap.length;
   }
 
   void toggleCategory(int index, WidgetRef ref) {
-    final sourcesMap = ref.read(sourcesMapProvider);
-    final List<String> newsSources = sourcesMap.keys.toList();
+    final sourcesList = ref.read(sourcesProvider);
 
-    final String category = newsSources[index];
-    final bool isSelected = sourcesMap[category] ?? false;
+    if (index >= 0 && index < sourcesList.length) {
+      final source = sourcesList[index];
 
-    final updatedMap = {
-      ...sourcesMap,
-      category: !isSelected,
-    };
+      source.isActivated = !source.isActivated;
 
-    ref.read(sourcesMapProvider.state).state = updatedMap;
+      ref.read(sourcesProvider.state).state = List.from(sourcesList);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final sourcesMap = ref.watch(sourcesMapProvider);
-        final List<String> newsSources = sourcesMap.keys.toList();
-        final int itemCount = newsSources.length;
+        final sourcesList = ref.watch(sourcesProvider);
+        final int itemCount = sourcesList.length;
 
         return ListView.builder(
           itemCount: itemCount,
           itemBuilder: (context, index) {
-            final String category = newsSources[index];
-            final bool isSelected = sourcesMap[category] ?? false;
+            final Source source = sourcesList[index];
+            final bool isSelected = source.isActivated;
 
             return Container(
               decoration: BoxDecoration(
@@ -155,8 +219,8 @@ class EditableSourcesListState extends ConsumerState<EditableSourcesList> {
               child: ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 20),
                 title: Text(
-                  category,
-                  style: const TextStyle(fontSize: 17),
+                  source.name,
+                  style: const TextStyle(fontSize: 19),
                 ),
                 leading: CircleAvatar(
                   backgroundColor: Colors.white,

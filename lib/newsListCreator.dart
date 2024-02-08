@@ -1,6 +1,8 @@
 import 'package:dart_rss/dart_rss.dart';
 import 'package:http/http.dart' as http;
 
+import 'sources.dart';
+
 class NewsData {
   final String title;
   final String date;
@@ -13,22 +15,39 @@ class NewsData {
   });
 }
 
-Future<List<NewsData>> fetchRssData(String url) async {
+Future<List<NewsData>> fetchRssDataFromSources(Iterable<Source> activatedSources) async {
   final List<NewsData> newsDataList = [];
 
   final client = http.Client();
 
-  final response = await client.get(Uri.parse(url));
-  final bodyString = response.body;
-  final channel = RssFeed.parse(bodyString);
+  for (final source in activatedSources) {
+    try {
+      final url = source.rss;
+      final response = await client.get(Uri.parse(url));
+      final bodyString = response.body;
+      final channel = RssFeed.parse(bodyString);
 
-  for (final item in channel.items) {
-    var news = NewsData(
-        title: item.title!,
-        date: item.pubDate!.split("+").first.split("-").first,
-        description: item.description!);
-    newsDataList.add(news);
+      for (final item in channel.items) {
+        var news = NewsData(
+          title: item.title ?? 'Unknown',
+          date: item.pubDate?.split("+").first.split("-").first ?? 'Unknown',
+          description: item.description ?? 'Unknown',
+        );
+
+        if(news.title!='Unknown') {
+          newsDataList.add(news);
+        }
+      }
+    } catch (e) {
+      //print('Error fetching RSS from ${source.name}: $e');
+      continue;
+    }
   }
+
+  client.close(); // Close the HTTP client after fetching data
+
+  // Sort the newsDataList by date
+  newsDataList.sort((a, b) => b.date.compareTo(a.date)); // Sort in descending order
 
   return newsDataList;
 }
