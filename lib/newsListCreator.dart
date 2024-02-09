@@ -1,6 +1,6 @@
 import 'package:dart_rss/dart_rss.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:intl/intl.dart';
 import 'sources.dart';
 
 class NewsData {
@@ -47,7 +47,8 @@ Future<List<NewsData>> fetchRssDataFromSources(Iterable<Source> activatedSources
   client.close(); // Close the HTTP client after fetching data
 
   // Sort the newsDataList by date
-  newsDataList.sort((a, b) => b.date.compareTo(a.date)); // Sort in descending order
+  final DateFormat dateFormat = DateFormat("EEE, dd MMM yyyy HH:mm:ss");
+  newsDataList.sort((a, b) => dateFormat.parse(b.date).compareTo(dateFormat.parse(a.date)));
 
   return newsDataList;
 }

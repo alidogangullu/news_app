@@ -52,7 +52,8 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<Source> sources = ref.read(sourcesProvider);
+    final loadSources = ref.watch(loadSourcesProvider);
+    final List<Source> sources = ref.watch(sourcesProvider);
     final activatedSources = sources.where((source) => source.isActivated);
 
     return Scaffold(
@@ -92,7 +93,6 @@ class HomePage extends ConsumerWidget {
         children: <Widget>[
           const SourcesTab(),
           Expanded(
-            //todo change news cards after activate or deactivate sources
             child: FutureBuilder(
               future: fetchRssDataFromSources(activatedSources),
               builder: (context, snapshot) {

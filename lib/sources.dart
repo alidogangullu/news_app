@@ -1,20 +1,63 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Source{
+class Source {
   String name;
   String rss;
   bool isActivated;
 
   Source(this.name, this.rss, this.isActivated);
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'rss': rss,
+      'isActivated': isActivated,
+    };
+  }
+
+  factory Source.fromJson(Map<String, dynamic> json) {
+    return Source(
+      json['name'],
+      json['rss'],
+      json['isActivated'],
+    );
+  }
 }
 
 final sourcesProvider = StateProvider<List<Source>>((ref) {
+  final sharedPreferences = ref.watch(sharedPreferencesProvider).value;
+  final sourcesJson = sharedPreferences!.getStringList('sources');
+  if (sourcesJson != null) {
+    return sourcesJson.map((json) => Source.fromJson(jsonDecode(json))).toList();
+  }
   return [
-    Source("source1", "rss", true),
+    Source("source1", "https://evrimagaci.org/rss.xml", true),
     Source("source2", "https://www.jpl.nasa.gov/feeds/news/", true),
-    Source("source3", "https://www.jpl.nasa.gov/feeds/news/", true),
+    Source("source3", "https://www.haberturk.com/rss", true),
   ];
+});
+
+final sharedPreferencesProvider = FutureProvider<SharedPreferences>((ref) async {
+  return await SharedPreferences.getInstance();
+});
+
+final saveSourcesProvider = Provider.autoDispose((ref) {
+  final sharedPreferences = ref.watch(sharedPreferencesProvider).value;
+  final sources = ref.watch(sourcesProvider);
+  final sourcesJson = sources.map((source) => jsonEncode(source.toJson())).toList();
+  sharedPreferences!.setStringList('sources', sourcesJson);
+});
+
+final loadSourcesProvider = Provider.autoDispose((ref) async {
+  final sharedPreferences = ref.watch(sharedPreferencesProvider).value;
+  final sourcesJson = sharedPreferences?.getStringList('sources');
+  if (sourcesJson != null) {
+    final sources = sourcesJson.map((json) => Source.fromJson(jsonDecode(json))).toList();
+    ref.read(sourcesProvider.state).state = sources;
+  }
 });
 
 class SourcesTab extends ConsumerStatefulWidget {
@@ -114,6 +157,7 @@ class EditSourcesPage extends ConsumerWidget {
                   final sourcesList = ref.read(sourcesProvider);
                   final newSource = Source(nameController.text, rssController.text, true);
                   ref.read(sourcesProvider.state).state = [...sourcesList, newSource];
+                  ref.read(saveSourcesProvider);
                   Navigator.of(context).pop();
                 },
                 child: const Text('Add'),
@@ -193,6 +237,7 @@ class EditableSourcesListState extends ConsumerState<EditableSourcesList> {
       source.isActivated = !source.isActivated;
 
       ref.read(sourcesProvider.state).state = List.from(sourcesList);
+      ref.read(saveSourcesProvider);
     }
   }
 
