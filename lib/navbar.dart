@@ -22,7 +22,6 @@ class MyBottomNavigationBar extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   buildNavItem(Icons.home),
-                  buildNavItem(Icons.search),
                   buildNavItem(Icons.bookmark),
                 ],
               ),

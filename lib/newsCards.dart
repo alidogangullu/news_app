@@ -1,5 +1,6 @@
 import 'package:appinio_swiper/appinio_swiper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:news_app/newsListCreator.dart';
 
 class NewsCards extends StatelessWidget {
@@ -64,7 +65,14 @@ class NewsCards extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 16),
                       child: Text(
                         item.date,
-                        style: const TextStyle(fontSize: 12),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 16),
+                      child: Text(
+                        "Published by: ${item.author}",
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                     Padding(
@@ -81,22 +89,8 @@ class NewsCards extends StatelessWidget {
                   right: 10,
                   child: Row(
                     children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Color.fromRGBO(0, 0, 0, 0.075),
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.thumb_up_alt_outlined,
-                          ),
-                          onPressed: () {
-                            // Implement like button action
-                          },
-                        ),
-                      ),
                       const SizedBox(
-                          width: 6), // Add some space between buttons
+                          width: 6),
                       Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
@@ -111,7 +105,7 @@ class NewsCards extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(
-                          width: 6), // Add some space between buttons
+                          width: 6),
                       Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
@@ -120,8 +114,10 @@ class NewsCards extends StatelessWidget {
                         child: IconButton(
                           icon: const Icon(Icons.ios_share_rounded,
                               color: Colors.black),
-                          onPressed: () {
-                            // Implement share button action
+                          onPressed: () async {
+                            await Clipboard.setData(ClipboardData(text: item.link));
+                            var snackBar = const SnackBar(content: Text('Link copied and ready to share.'));
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           },
                         ),
                       ),

@@ -91,7 +91,7 @@ class HomePage extends ConsumerWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          const SourcesTab(),
+          //const SourcesTab(),
           Expanded(
             child: FutureBuilder(
               future: fetchRssDataFromSources(activatedSources),

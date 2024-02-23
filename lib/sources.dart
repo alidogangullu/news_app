@@ -34,9 +34,9 @@ final sourcesProvider = StateProvider<List<Source>>((ref) {
     return sourcesJson.map((json) => Source.fromJson(jsonDecode(json))).toList();
   }
   return [
-    Source("source1", "https://evrimagaci.org/rss.xml", true),
-    Source("source2", "https://www.jpl.nasa.gov/feeds/news/", true),
-    Source("source3", "https://www.haberturk.com/rss", true),
+    Source("LifeHacker", "https://lifehacker.com/feed/rss", true),
+    Source("Nasa", "https://www.jpl.nasa.gov/feeds/news/", true),
+    Source("TheVerge", "https://www.theverge.com/rss/frontpage", true),
   ];
 });
 
@@ -60,6 +60,7 @@ final loadSourcesProvider = Provider.autoDispose((ref) async {
   }
 });
 
+/*
 class SourcesTab extends ConsumerStatefulWidget {
   const SourcesTab({super.key});
 
@@ -78,38 +79,39 @@ class _SourcesTabState extends ConsumerState<SourcesTab> {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 8),
-        child: Row(
-          children: activeSources.asMap().entries.map((entry) {
-            final index = entry.key;
-            final source = entry.value;
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
 
-            return GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedSourcesIndex = index;
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                child: Text(
-                  source.name,
-                  style: TextStyle(
-                    fontSize: index == selectedSourcesIndex ? 22 : 16,
-                    color: index == selectedSourcesIndex
-                        ? Colors.white
-                        : Colors.grey,
-                  ),
+        children: activeSources.asMap().entries.map((entry) {
+          final index = entry.key;
+          final source = entry.value;
+
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedSourcesIndex = index;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: Text(
+                source.name,
+                style: TextStyle(
+                  fontSize: index == selectedSourcesIndex ? 22 : 18,
+                  color: index == selectedSourcesIndex
+                      ? Colors.white
+                      : Colors.grey,
                 ),
               ),
-            );
-          }).toList(),
-        ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }
 }
+
+*/
 
 class EditSourcesPage extends ConsumerWidget {
   const EditSourcesPage({super.key});

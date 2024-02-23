@@ -7,11 +7,15 @@ class NewsData {
   final String title;
   final String date;
   final String description;
+  final String author;
+  final String link;
 
   NewsData({
     required this.title,
     required this.date,
     required this.description,
+    required this.author,
+    required this.link
   });
 }
 
@@ -32,6 +36,8 @@ Future<List<NewsData>> fetchRssDataFromSources(Iterable<Source> activatedSources
           title: item.title ?? 'Unknown',
           date: item.pubDate?.split("+").first.split("-").first ?? 'Unknown',
           description: item.description ?? 'Unknown',
+          author: item.author ?? 'Unknown',
+          link: item.link ?? 'Unknown',
         );
 
         if(news.title!='Unknown') {
